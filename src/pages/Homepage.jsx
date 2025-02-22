@@ -1,11 +1,11 @@
 import styles from "./Homepage.module.css";
 import { Link } from "react-router-dom";
-import AppNav from "../components/PageNav";
+import PageNav from "../components/PageNav";
 
 export default function Homepage() {
   return (
     <main className={styles.homepage}>
-      <AppNav />
+      <PageNav />
 
       <section>
         <h1>

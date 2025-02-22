@@ -1,5 +1,5 @@
 import styles from "./AppLayout.module.css";
-// import AppNav from "../components/PageNav";
+import PageNav from "../components/PageNav";
 import Sidebar from "../components/sidebar";
 import Map from "../components/Map";
 
