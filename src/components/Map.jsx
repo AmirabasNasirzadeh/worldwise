@@ -14,11 +14,10 @@ import { useEffect, useState } from "react";
 import { useCities } from "../contexts/CitiesContext";
 import { useGeolocation } from "../hooks/useGeolocation";
 import Button from "./Button";
+import { useUrlPosition } from "../hooks/useUrlPosition";
 
 function Map() {
-  const [searchLocation, setSearchLocation] = useSearchParams();
-  const mapLat = searchLocation.get("lat");
-  const mapLng = searchLocation.get("lng");
+  const [mapLat, mapLng] = useUrlPosition();
   const [mapPosition, setMapPosition] = useState([40, 0]);
   const { cities } = useCities();
   const {
