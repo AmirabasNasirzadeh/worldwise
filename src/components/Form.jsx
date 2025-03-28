@@ -9,6 +9,9 @@ import ButtonBack from "./ButtonBack";
 import { useUrlPosition } from "../hooks/useUrlPosition";
 import Spinner from "./Spinner";
 import Message from "./Message";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { useCities } from "../contexts/CitiesContext";
 
 export function convertToEmoji(countryCode) {
   const codePoints = countryCode
@@ -27,9 +30,13 @@ function Form() {
   const [emoji, setEmoji] = useState("");
   const [isLoadingGeocoding, setIsLoadingGeocoding] = useState(false);
   const [geocodingError, setGeocodingError] = useState("");
+  const { createCity, isLoading } = useCities();
+  const navigate = useNavigate();
 
   useEffect(
     function () {
+      if (!mapLat && !mapLng) return;
+
       async function fetchCityData() {
         try {
           setIsLoadingGeocoding(true);
@@ -60,13 +67,38 @@ function Form() {
     [mapLat, mapLng]
   );
 
-  const navigate = useNavigate();
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!cityName || !date) return;
+
+    const newCity = {
+      cityName,
+      country,
+      emoji,
+      date,
+      notes,
+      position: { mapLat, mapLng },
+    };
+
+    await createCity(newCity);
+    navigate("/app/cities");
+  }
 
   if (isLoadingGeocoding) return <Spinner />;
+
+  if (!mapLat && !mapLng)
+    return (
+      <Message message="Please start by clicking somewhere on the map (:" />
+    );
+
   if (geocodingError) return <Message message={geocodingError} />;
 
   return (
-    <form className={styles.form}>
+    <form
+      className={`${styles.form} ${isLoading ? styles.loading : ""}`}
+      onSubmit={handleSubmit}
+    >
       <div className={styles.row}>
         <label htmlFor="cityName">City name</label>
         <input
@@ -79,10 +111,11 @@ function Form() {
 
       <div className={styles.row}>
         <label htmlFor="date">When did you go to {cityName}?</label>
-        <input
+        <DatePicker
           id="date"
-          onChange={(e) => setDate(e.target.value)}
-          value={date}
+          onChange={(date) => setDate(date)}
+          selected={date}
+          dateFormat="dd/MM/yyyy"
         />
       </div>
 

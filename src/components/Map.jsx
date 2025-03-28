@@ -28,7 +28,7 @@ function Map() {
 
   useEffect(
     function () {
-      if (mapLat && mapLng) setMapPosition([mapLat, mapLng]);
+      if (mapLat != null && mapLng != null) setMapPosition([mapLat, mapLng]); // Validate coordinates
     },
     [mapLat, mapLng]
   );
@@ -58,18 +58,33 @@ function Map() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
         />
-        {cities.map((city) => (
-          <Marker
-            position={[city.position.lat, city.position.lng]}
-            key={city.id}
-          >
-            <Popup>
-              <span>
-                {city.emoji} {city.cityName}
-              </span>
-            </Popup>
-          </Marker>
-        ))}
+        {cities.map((city) => {
+          const isValid =
+            !isNaN(Number(city.position?.mapLat)) &&
+            !isNaN(Number(city.position?.mapLng)); // Validate if lat/lng can be converted to numbers
+
+          if (!isValid) {
+            console.warn("Invalid city position:", city);
+            return null;
+          }
+
+          return (
+            <Marker
+              position={[
+                Number(city.position.mapLat), // Convert string to number
+                Number(city.position.mapLng), // Convert string to number
+              ]}
+              key={city.id}
+            >
+              <Popup>
+                <span>
+                  {city.emoji} {city.cityName}
+                </span>
+              </Popup>
+            </Marker>
+          );
+        })}
+
         <ChangeCenter position={mapPosition} />
         <DetectClick />
       </MapContainer>
@@ -87,7 +102,15 @@ function DetectClick() {
   const navigate = useNavigate();
 
   useMapEvent({
-    click: (e) => navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`),
+    click: (e) => {
+      const { lat, lng } = e.latlng;
+      if (lat != null && lng != null) {
+        // Validate click coordinates
+        navigate(`form?lat=${lat}&lng=${lng}`);
+      } else {
+        console.error("Invalid click event coordinates:", e.latlng);
+      }
+    },
   });
 }
 
