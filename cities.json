@@ -35,18 +35,6 @@
         "mapLng": 13.376933665713324
       },
       "id": "98443197"
-    },
-    {
-      "id": "b97e",
-      "cityName": "Osno Lubuskie",
-      "country": "Poland",
-      "emoji": "🇵🇱",
-      "date": "2025-03-28T20:03:58.302Z",
-      "notes": "dsfgsdfgsd",
-      "position": {
-        "mapLat": "52.442968805558195",
-        "mapLng": "14.952392578125002"
-      }
     }
   ]
 }
