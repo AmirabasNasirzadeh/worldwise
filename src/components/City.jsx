@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import styles from "./City.module.css";
 import { useCities } from "../contexts/CitiesContext";
 import { useEffect } from "react";
-import Button from "./Button";
 import Spinner from "./Spinner";
 import ButtonBack from "./ButtonBack";
 
@@ -22,8 +21,7 @@ function City() {
     function () {
       getCity(id);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id]
+    [id, getCity]
   );
 
   const { cityName, emoji, date, notes } = currentCity;
